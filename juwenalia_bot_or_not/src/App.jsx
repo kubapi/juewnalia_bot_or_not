@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import TinderCard from "react-tinder-card";
 import { images as allImages } from "./images/sample/imageManifest";
 
@@ -13,10 +13,12 @@ export default function DeepfakeQuizApp() {
   const [images] = useState(() => loadImages());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(5);
   const [showResult, setShowResult] = useState(false);
   const [started, setStarted] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+  const timerInterval = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -28,14 +30,43 @@ export default function DeepfakeQuizApp() {
   }, [currentIndex]);
 
   useEffect(() => {
+    if (currentIndex + 1 < images.length) {
+      const nextImg = new window.Image();
+      nextImg.src = images[currentIndex + 1].url;
+    }
+  }, [currentIndex, images]);
+
+  useEffect(() => {
     if (!started || showResult) return;
+    timerInterval.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev > 0) return prev - 1;
+        return 0;
+      });
+    }, 1000);
+    return () => clearInterval(timerInterval.current);
+  }, [started, showResult]);
+
+  useEffect(() => {
     if (timer === 0 || currentIndex >= images.length) {
       setShowResult(true);
-      return;
+      clearInterval(timerInterval.current);
     }
-    const countdown = setTimeout(() => setTimer(timer - 1), 1000);
-    return () => clearTimeout(countdown);
-  }, [timer, started, showResult, currentIndex]);
+  }, [timer, currentIndex, images.length]);
+
+  useEffect(() => {
+    if (!started) setTimer(5);
+  }, [started]);
+
+  // Preload next 5 images robustly
+  useEffect(() => {
+    for (let i = 1; i <= 5; i++) {
+      if (currentIndex + i < images.length) {
+        const img = new window.Image();
+        img.src = images[currentIndex + i].url;
+      }
+    }
+  }, [currentIndex, images]);
 
   const handleSwipe = useCallback(
     (direction) => {
@@ -47,8 +78,12 @@ export default function DeepfakeQuizApp() {
       const userAnswer = direction === "right" ? "real" : "deepfake";
       if (userAnswer === image.label) {
         setScore((prev) => prev + 1);
+        setFeedback({ text: "Correct!", color: "green" });
+      } else {
+        setFeedback({ text: "Wrong!", color: "red" });
       }
       setCurrentIndex((prev) => prev + 1);
+      setTimeout(() => setFeedback(null), 1000);
     },
     [currentIndex, images],
   );
@@ -58,15 +93,28 @@ export default function DeepfakeQuizApp() {
 
   if (!started) {
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center bg-gray-900">
-        <div className="backdrop-blur-md bg-black/60 p-10 rounded-xl space-y-6">
-          <h1 className="text-4xl font-bold text-white">Czy to DeepFake?</h1>
-          <button
-            onClick={() => setStarted(true)}
-            className="px-14 py-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-3xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition"
-          >
-            Zacznij grę!
-          </button>
+      <div className="fixed inset-0 flex flex-col items-center justify-center" style={{ 
+        backgroundColor: '#003399',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
+      }}>
+        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl">
+          <h1 className="text-5xl font-bold text-white text-center">Bot or Not!</h1>
+          <p className="text-white text-center mb-8 text-xl">
+            Swipe left (deepfake) or right (real) depending on whether you think the image is real or a deepfake.
+          </p>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setStarted(true)}
+              className="px-40 py-20 text-7xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition"
+              style={{ backgroundColor: '#FFD600', color: '#003399', border: 'none', boxShadow: '0 8px 32px 0 rgba(0,0,0,0.2)' }}
+            >
+              Start Game!
+            </button>
+          </div>
+          <div className="flex justify-center items-center gap-8 mt-12">
+            <img src="/eu-flag.jpg" alt="European Union Flag" className="w-32 h-auto" />
+            <img src="/pravda-logo.png" alt="Pravda Association Logo" className="w-32 h-auto" />
+          </div>
         </div>
       </div>
     );
@@ -74,14 +122,20 @@ export default function DeepfakeQuizApp() {
 
   if (showResult) {
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center text-center p-6 bg-gradient-to-b from-white via-gray-100 to-white">
-        <h1 className="text-4xl font-bold mb-6">Gra zakończona</h1>
-        <p className="text-2xl mb-6">
-          Twój wynik: {score} / {images.length}
-        </p>
-        <footer className="text-center text-xs text-gray-400 py-4 w-full border-t mt-6">
-          <p>© 2025 Czy to Deepfake?</p>
-        </footer>
+      <div className="fixed inset-0 flex flex-col items-center justify-center" style={{ 
+        backgroundColor: '#003399',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
+      }}>
+        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl flex flex-col items-center">
+          <h1 className="text-5xl font-bold text-white text-center">Game Over</h1>
+          <p className="text-white text-center mb-8 text-3xl font-bold">
+            Your score: {score} / {images.length}
+          </p>
+          <div className="flex justify-center items-center gap-8 mt-12">
+            <img src="/eu-flag.jpg" alt="European Union Flag" className="w-32 h-auto" />
+            <img src="/pravda-logo.png" alt="Pravda Association Logo" className="w-32 h-auto" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -90,26 +144,23 @@ export default function DeepfakeQuizApp() {
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-between bg-gradient-to-b from-white via-gray-100 to-white overflow-hidden touch-pan-y">
-      <header className="text-center pt-4 px-4 w-full">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-1">
-          Czy to deepfake?
+      <header className="text-center pt-2 px-4 w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 ecl-heading ecl-heading--h1">
+          Bot or Not!
         </h1>
-        <p className="text-sm sm:text-md text-gray-500">
-          Przesuwaj w prawo (deepfake) lub w lewo (prawdziwe) w zależności od
-          tego czy uważasz, że zdjęcie jest prawdziwe czy jest deepfake.
-        </p>
-        <p className="text-lg font-semibold mt-2">
-          🧠 Score: {score} / {images.length} | ⏳ {timer}s
-        </p>
+        <div className="flex justify-center gap-8">
+          <div className="text-md font-semibold text-blue-900 ecl-paragraph">
+            Score: {score} / {images.length}
+          </div>
+          <div className="text-md font-semibold text-blue-900 ecl-paragraph">
+            Time: {timer}s
+          </div>
+        </div>
       </header>
 
-      <main className="flex-grow flex items-center justify-center w-full px-4 select-none">
-        <div className="flex items-center justify-center gap-4 w-full max-w-screen-md">
-          <div className="hidden sm:block text-right text-gray-400 text-sm w-1/4">
-            ← DeepFake
-          </div>
-
-          <div className="relative flex items-center justify-center w-[80vw] max-w-[400px] h-[80vh] touch-pan-y">
+      <main className="flex-grow flex items-center justify-center w-full h-[calc(100vh-60px)] select-none">
+        <div className="flex items-center justify-center w-full h-full">
+          <div className="relative flex items-center justify-center w-full h-full touch-pan-y">
             {currentImage && (
               <TinderCard
                 key={currentImage.id}
@@ -132,20 +183,18 @@ export default function DeepfakeQuizApp() {
                       {swipeDirection === "right" ? "Real" : "Deepfake"}
                     </div>
                   )}
+                  {feedback && (
+                    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-8 py-4 rounded-2xl text-4xl font-bold shadow-lg z-50"
+                      style={{ background: feedback.color === 'green' ? '#d1fae5' : '#fee2e2', color: feedback.color === 'green' ? '#065f46' : '#991b1b', border: '2px solid #fff' }}>
+                      {feedback.text}
+                    </div>
+                  )}
                 </div>
               </TinderCard>
             )}
           </div>
-
-          <div className="hidden sm:block text-left text-gray-400 text-sm w-1/4">
-            Prawdziwe →
-          </div>
         </div>
       </main>
-
-      <footer className="text-center text-xs text-gray-400 py-4 w-full border-t">
-        <p>© 2025 Bot or Not</p>
-      </footer>
     </div>
   );
 }
