@@ -13,7 +13,7 @@ export default function DeepfakeQuizApp() {
   const [images] = useState(() => loadImages());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(60);
   const [showResult, setShowResult] = useState(false);
   const [started, setStarted] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState(null);
@@ -55,7 +55,7 @@ export default function DeepfakeQuizApp() {
   }, [timer, currentIndex, images.length]);
 
   useEffect(() => {
-    if (!started) setTimer(5);
+    if (!started) setTimer(60);
   }, [started]);
 
   // Preload next 5 images robustly
