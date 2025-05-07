@@ -68,3 +68,7 @@ button:focus-visible {
         background-color: #f9f9f9;
     }
 }
+
+.tinder-card {
+    transition: transform 0.12s cubic-bezier(0.4, 0.2, 0.2, 1), box-shadow 0.12s;
+}

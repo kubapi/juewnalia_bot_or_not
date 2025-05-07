@@ -18,6 +18,7 @@ export default function DeepfakeQuizApp() {
   const [started, setStarted] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [feedbackStyle, setFeedbackStyle] = useState({});
   const timerInterval = useRef(null);
 
   useEffect(() => {
@@ -76,12 +77,24 @@ export default function DeepfakeQuizApp() {
 
       const image = images[currentIndex];
       const userAnswer = direction === "right" ? "real" : "deepfake";
+      let feedbackText = "";
       if (userAnswer === image.label) {
+        feedbackText = `Correct, it was ${image.label === 'real' ? 'real' : 'a deepfake'}`;
         setScore((prev) => prev + 1);
-        setFeedback({ text: "Correct!", color: "green" });
+        setFeedback({ text: feedbackText, color: "green" });
       } else {
-        setFeedback({ text: "Wrong!", color: "red" });
+        feedbackText = `Wrong, it was ${image.label === 'real' ? 'real' : 'a deepfake'}`;
+        setFeedback({ text: feedbackText, color: "red" });
       }
+      // Random position (top 10-60%, left 10-70%) and random tilt (-15 to 15deg)
+      const top = Math.floor(Math.random() * 50) + 10;
+      const left = Math.floor(Math.random() * 60) + 10;
+      const rotate = Math.floor(Math.random() * 31) - 15;
+      setFeedbackStyle({
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-50%, -50%) rotate(${rotate}deg)`
+      });
       setCurrentIndex((prev) => prev + 1);
       setTimeout(() => setFeedback(null), 1000);
     },
@@ -185,14 +198,19 @@ export default function DeepfakeQuizApp() {
                     className="w-full h-full object-cover rounded-3xl shadow-2xl select-none pointer-events-none"
                     draggable={false}
                   />
-                  {swipeDirection && (
-                    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 text-white text-xl font-bold bg-black bg-opacity-60 rounded-xl">
-                      {swipeDirection === "right" ? "Real" : "Deepfake"}
-                    </div>
-                  )}
                   {feedback && (
-                    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-8 py-4 rounded-2xl text-4xl font-bold shadow-lg z-50"
-                      style={{ background: feedback.color === 'green' ? '#d1fae5' : '#fee2e2', color: feedback.color === 'green' ? '#065f46' : '#991b1b', border: '2px solid #fff' }}>
+                    <div
+                      className="absolute px-4 py-2 rounded-xl text-lg font-semibold shadow-lg z-50 text-center"
+                      style={{
+                        background: feedback.color === 'green' ? '#d1fae5' : '#fee2e2',
+                        color: feedback.color === 'green' ? '#065f46' : '#991b1b',
+                        border: '2px solid #fff',
+                        ...feedbackStyle,
+                        minWidth: '120px',
+                        maxWidth: '70%',
+                        pointerEvents: 'none',
+                      }}
+                    >
                       {feedback.text}
                     </div>
                   )}
