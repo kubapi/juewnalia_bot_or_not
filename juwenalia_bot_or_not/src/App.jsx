@@ -143,7 +143,14 @@ export default function DeepfakeQuizApp() {
   const currentImage = images[currentIndex];
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-between bg-gradient-to-b from-white via-gray-100 to-white overflow-hidden touch-pan-y">
+    <div
+      className="fixed inset-0 flex flex-col items-center justify-between bg-gradient-to-b from-white via-gray-100 to-white overflow-hidden touch-pan-y"
+      style={{
+        minHeight: '100dvh',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingTop: 'env(safe-area-inset-top)',
+      }}
+    >
       <header className="text-center pt-2 px-4 w-full">
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 ecl-heading ecl-heading--h1">
           Bot or Not!
