@@ -45,7 +45,7 @@ export default function DeepfakeQuizApp() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowLeft") handleAnswer("deepfake");
+      if (e.key === "ArrowLeft") handleAnswer("fake");
       if (e.key === "ArrowRight") handleAnswer("real");
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -110,7 +110,7 @@ export default function DeepfakeQuizApp() {
         isCorrect = true;
         
         // Track correct detections
-        if (userAnswer === "deepfake") {
+        if (userAnswer === "fake") {
           setDeepfakesDetected((prev) => prev + 1);
         } else if (userAnswer === "real") {
           setRealDetected((prev) => prev + 1);
@@ -228,7 +228,7 @@ export default function DeepfakeQuizApp() {
           <p className="text-white text-center mb-8 text-xl" style={{ 
             fontFamily: 'Minecraft, "Courier New", monospace !important'
           }}>
-            SCROLL THROUGH THE SOCIAL FEED AND CLICK "DEEPFAKE" OR "REAL" FOR EACH POST.
+            SCROLL THROUGH THE SOCIAL FEED AND CLICK "FAKE" OR "REAL" FOR EACH POST.
           </p>
           
           <div className="flex justify-center">
@@ -282,7 +282,7 @@ export default function DeepfakeQuizApp() {
             fontFamily: 'Minecraft, "Courier New", monospace !important'
           }}>
             <div className="mb-2">
-              ❌ DEEPFAKES DETECTED: <span className="font-black text-xl">{deepfakesDetected}</span>
+              ❌ FAKES DETECTED: <span className="font-black text-xl">{deepfakesDetected}</span>
             </div>
             <div>
               ✅ REAL IMAGES DETECTED: <span className="font-black text-xl">{realDetected}</span>
@@ -416,7 +416,7 @@ export default function DeepfakeQuizApp() {
                     {!answeredImages.has(index) ? (
                       <div className="flex gap-2 sm:gap-3">
                         <button
-                          onClick={() => handleAnswer("deepfake", index)}
+                          onClick={() => handleAnswer("fake", index)}
                           className="flex-1 py-4 sm:py-3 px-3 sm:px-4 text-base sm:text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 min-h-[48px]"
                           style={{ 
                             backgroundColor: '#FF4444', 
@@ -427,7 +427,7 @@ export default function DeepfakeQuizApp() {
                             boxShadow: '0 4px 16px 0 rgba(255,68,68,0.3)' 
                           }}
                         >
-                          DEEPFAKE
+                          FAKE
                         </button>
                         <button
                           onClick={() => handleAnswer("real", index)}
@@ -456,7 +456,7 @@ export default function DeepfakeQuizApp() {
                                 fontFamily: 'Minecraft, "Courier New", monospace !important',
                                 border: '2px solid #000'
                               }}>
-                                ✅&nbsp;&nbsp;CORRECT: IT WAS {result.correctAnswer.toUpperCase()}
+                                ✅&nbsp;&nbsp;CORRECT: IT WAS {result.correctAnswer === 'fake' ? 'FAKE' : 'REAL'}
                               </div>
                             );
                           } else {
@@ -465,7 +465,7 @@ export default function DeepfakeQuizApp() {
                                 fontFamily: 'Minecraft, "Courier New", monospace !important',
                                 border: '2px solid #000'
                               }}>
-                                ❌&nbsp;&nbsp;FALSE: IT WAS {result.correctAnswer.toUpperCase()}
+                                ❌&nbsp;&nbsp;FALSE: IT WAS {result.correctAnswer === 'fake' ? 'FAKE' : 'REAL'}
                               </div>
                             );
                           }
