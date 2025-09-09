@@ -5,7 +5,7 @@ import { images as allImages } from "./images/sample/imageManifest";
 const Heart = ({ filled = true, size = "w-6 h-6" }) => (
   <div className={`${size} relative`}>
     <img 
-      src="/src/mcheart.jpg" 
+      src="/mcheart.jpg" 
       alt="heart" 
       className={`w-full h-full object-contain ${!filled ? 'opacity-30 grayscale' : ''}`}
     />
