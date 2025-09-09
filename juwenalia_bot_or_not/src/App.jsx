@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import TinderCard from "react-tinder-card";
 import { images as allImages } from "./images/sample/imageManifest";
+
+// Minecraft-style heart component using custom image
+const Heart = ({ filled = true, size = "w-6 h-6" }) => (
+  <div className={`${size} relative`}>
+    <img 
+      src="/src/mcheart.jpg" 
+      alt="heart" 
+      className={`w-full h-full object-contain ${!filled ? 'opacity-30 grayscale' : ''}`}
+    />
+  </div>
+);
 
 function loadImages() {
   return [...allImages]
@@ -10,32 +20,38 @@ function loadImages() {
 }
 
 export default function DeepfakeQuizApp() {
-  const [images] = useState(() => loadImages());
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [images, setImages] = useState(() => loadImages());
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(60);
   const [showResult, setShowResult] = useState(false);
   const [started, setStarted] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState(null);
-  const [feedback, setFeedback] = useState(null);
-  const [feedbackStyle, setFeedbackStyle] = useState({});
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  const [answeredImages, setAnsweredImages] = useState(new Set());
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [deepfakesDetected, setDeepfakesDetected] = useState(0);
+  const [realDetected, setRealDetected] = useState(0);
+  const [postData, setPostData] = useState({});
+  const [lives, setLives] = useState(5);
+  const [answerResults, setAnswerResults] = useState({});
+  const [visibleImagesCount, setVisibleImagesCount] = useState(1); // Start with 1 image
   const timerInterval = useRef(null);
+  const feedContainerRef = useRef(null);
+
+  // Function to reshuffle images
+  const reshuffleImages = () => {
+    setImages(loadImages());
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowLeft") handleSwipe("left");
-      if (e.key === "ArrowRight") handleSwipe("right");
+      if (e.key === "ArrowLeft") handleAnswer("deepfake");
+      if (e.key === "ArrowRight") handleAnswer("real");
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentIndex]);
+  }, []);
 
-  useEffect(() => {
-    if (currentIndex + 1 < images.length) {
-      const nextImg = new window.Image();
-      nextImg.src = images[currentIndex + 1].url;
-    }
-  }, [currentIndex, images]);
 
   useEffect(() => {
     if (!started || showResult) return;
@@ -49,60 +65,154 @@ export default function DeepfakeQuizApp() {
   }, [started, showResult]);
 
   useEffect(() => {
-    if (timer === 0 || currentIndex >= images.length) {
+    if (timer === 0 || lives === 0) {
       setShowResult(true);
       clearInterval(timerInterval.current);
     }
-  }, [timer, currentIndex, images.length]);
+  }, [timer, lives]);
 
   useEffect(() => {
-    if (!started) setTimer(60);
+    if (!started) {
+      setTimer(60);
+      setLives(5);
+    }
   }, [started]);
 
-  // Preload next 5 images robustly
+  // Initialize post data with random usernames, dates, and engagement
   useEffect(() => {
-    for (let i = 1; i <= 5; i++) {
-      if (currentIndex + i < images.length) {
-        const img = new window.Image();
-        img.src = images[currentIndex + i].url;
-      }
-    }
-  }, [currentIndex, images]);
+    const newPostData = {};
+    images.slice(0, 100).forEach((_, index) => {
+      const day = Math.floor(Math.random() * 30) + 1;
+      const month = Math.floor(Math.random() * 12) + 1;
+      const year = 2023 + Math.floor(Math.random() * 2);
+      newPostData[index] = {
+        username: `#${Math.random().toString(36).substr(2, 8)}`,
+        date: `${day}/${month}/${year}`,
+        likes: Math.floor(Math.random() * 100) + 10,
+        comments: Math.floor(Math.random() * 20) + 1
+      };
+    });
+    setPostData(newPostData);
+  }, [images]);
 
-  const handleSwipe = useCallback(
-    (direction) => {
-      if (currentIndex >= images.length) return;
-      setSwipeDirection(direction);
-      setTimeout(() => setSwipeDirection(null), 300);
+  const handleAnswer = useCallback(
+    (userAnswer, imageId = null) => {
+      const targetImageId = imageId || 0;
+      const image = images[targetImageId];
+      
+      if (!image || answeredImages.has(targetImageId)) return;
 
-      const image = images[currentIndex];
-      const userAnswer = direction === "right" ? "real" : "deepfake";
-      let feedbackText = "";
+      let isCorrect = false;
+      
       if (userAnswer === image.label) {
-        feedbackText = `Correct, it was ${image.label === 'real' ? 'real' : 'a deepfake'}`;
         setScore((prev) => prev + 1);
-        setFeedback({ text: feedbackText, color: "green" });
+        setCorrectAnswers((prev) => prev + 1);
+        isCorrect = true;
+        
+        // Track correct detections
+        if (userAnswer === "deepfake") {
+          setDeepfakesDetected((prev) => prev + 1);
+        } else if (userAnswer === "real") {
+          setRealDetected((prev) => prev + 1);
+        }
       } else {
-        feedbackText = `Wrong, it was ${image.label === 'real' ? 'real' : 'a deepfake'}`;
-        setFeedback({ text: feedbackText, color: "red" });
+        setLives((prev) => Math.max(0, prev - 1));
+        isCorrect = false;
       }
-      // Random position (top 10-60%, left 10-70%) and random tilt (-15 to 15deg)
-      const top = Math.floor(Math.random() * 50) + 10;
-      const left = Math.floor(Math.random() * 60) + 10;
-      const rotate = Math.floor(Math.random() * 31) - 15;
-      setFeedbackStyle({
-        top: `${top}%`,
-        left: `${left}%`,
-        transform: `translate(-50%, -50%) rotate(${rotate}deg)`
-      });
-      setCurrentIndex((prev) => prev + 1);
-      setTimeout(() => setFeedback(null), 1000);
+      
+      // Mark image as answered and store result
+      setAnsweredImages(prev => new Set([...prev, targetImageId]));
+      setAnswerResults(prev => ({
+        ...prev,
+        [targetImageId]: {
+          userAnswer,
+          correctAnswer: image.label,
+          isCorrect
+        }
+      }));
+      
+      // Load next image if we've answered the current last visible image
+      if (targetImageId === visibleImagesCount - 1 && visibleImagesCount < 100) {
+        setVisibleImagesCount(prev => Math.min(prev + 1, 100));
+        
+        // Auto-scroll to the next post after a short delay
+        setTimeout(() => {
+          if (feedContainerRef.current) {
+            const nextPostElement = feedContainerRef.current.children[targetImageId + 1];
+            if (nextPostElement) {
+              nextPostElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+            }
+          }
+        }, 500); // Small delay to show feedback first
+      }
+      
     },
-    [currentIndex, images],
+    [images, answeredImages, visibleImagesCount],
   );
 
-  const swipeRequirementType = "position";
-  const swipeThreshold = 20;
+  if (showInstructions) {
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center" style={{ 
+        backgroundColor: '#003399',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
+      }}>
+        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl game-font">
+          <h1 className="text-5xl font-bold text-white text-center" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important',
+            letterSpacing: '3px'
+          }}>GAME RULES</h1>
+          
+          <div className="space-y-6 text-white text-center">
+            <div className="text-2xl font-bold" style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important'
+            }}>
+              ❤️ YOU HAVE 5 HEARTS
+            </div>
+            <div className="text-xl" style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important'
+            }}>
+              IF YOU ANSWER WRONG, YOU LOSE A HEART
+            </div>
+            <div className="text-2xl font-bold" style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important'
+            }}>
+              ⏰ 60 SECONDS TO COLLECT POINTS
+            </div>
+            <div className="text-xl" style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important'
+            }}>
+              YOUR TASK IS TO GET AS MANY POINTS AS POSSIBLE!
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                reshuffleImages();
+                setShowInstructions(false);
+                setStarted(true);
+              }}
+              className="px-20 py-10 text-4xl font-bold rounded-2xl shadow-2xl hover:scale-105 transition"
+              style={{ 
+                backgroundColor: '#FFD600', 
+                color: '#003399', 
+                border: '4px solid #000', 
+                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                letterSpacing: '2px',
+                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.2)' 
+              }}
+            >
+              LET'S GO!
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!started) {
     return (
@@ -110,18 +220,31 @@ export default function DeepfakeQuizApp() {
         backgroundColor: '#003399',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
       }}>
-        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl">
-          <h1 className="text-5xl font-bold text-white text-center">Bot or Not!</h1>
-          <p className="text-white text-center mb-8 text-xl">
-            Swipe left (deepfake) or right (real) depending on whether you think the image is real or a deepfake.
+        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl game-font">
+          <h1 className="text-5xl font-bold text-white text-center" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important',
+            letterSpacing: '3px'
+          }}>BOT OR NOT!</h1>
+          <p className="text-white text-center mb-8 text-xl" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            SCROLL THROUGH THE SOCIAL FEED AND CLICK "DEEPFAKE" OR "REAL" FOR EACH POST.
           </p>
+          
           <div className="flex justify-center">
             <button
-              onClick={() => setStarted(true)}
+              onClick={() => setShowInstructions(true)}
               className="px-40 py-20 text-7xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition"
-              style={{ backgroundColor: '#FFD600', color: '#003399', border: 'none', boxShadow: '0 8px 32px 0 rgba(0,0,0,0.2)' }}
+              style={{ 
+                backgroundColor: '#FFD600', 
+                color: '#003399', 
+                border: '4px solid #000', 
+                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                letterSpacing: '4px',
+                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.2)' 
+              }}
             >
-              Start Game!
+              START GAME!
             </button>
           </div>
           <div className="flex justify-center items-center gap-8 mt-12">
@@ -139,12 +262,63 @@ export default function DeepfakeQuizApp() {
         backgroundColor: '#003399',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
       }}>
-        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl flex flex-col items-center">
-          <h1 className="text-5xl font-bold text-white text-center">Game Over</h1>
-          <p className="text-white text-center mb-8 text-3xl font-bold">
-            Your score: {score} / {images.length}
+        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl flex flex-col items-center game-font">
+          <h1 className="text-5xl font-bold text-white text-center" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important',
+            letterSpacing: '3px'
+          }}>NICE TRY!</h1>
+          <p className="text-white text-center mb-8 text-3xl font-bold" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            YOUR SCORE: <span className="font-black text-4xl">{score}</span>
           </p>
-          <div className="flex justify-center items-center gap-8 mt-12">
+          <p className="text-white text-center mb-4 text-lg" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            YOU ANSWERED <span className="font-black text-xl">{correctAnswers}</span> POSTS CORRECTLY OUT OF <span className="font-black text-xl">{answeredImages.size}</span> POSTS
+          </p>
+          
+          <div className="text-white text-center mb-4 text-lg" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            <div className="mb-2">
+              ❌ DEEPFAKES DETECTED: <span className="font-black text-xl">{deepfakesDetected}</span>
+            </div>
+            <div>
+              ✅ REAL IMAGES DETECTED: <span className="font-black text-xl">{realDetected}</span>
+            </div>
+          </div>
+          
+          {/* Restart Button */}
+          <button
+            onClick={() => {
+              reshuffleImages();
+              setStarted(false);
+              setShowResult(false);
+              setScore(0);
+              setCorrectAnswers(0);
+              setDeepfakesDetected(0);
+              setRealDetected(0);
+              setAnsweredImages(new Set());
+              setAnswerResults({});
+              setVisibleImagesCount(1);
+              setLives(5);
+              setTimer(60);
+            }}
+            className="px-8 py-4 text-xl font-bold rounded-xl shadow-2xl hover:scale-105 transition-all duration-200 mb-8"
+            style={{ 
+              backgroundColor: '#FFD600', 
+              color: '#003399', 
+              border: '3px solid #000', 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              letterSpacing: '2px',
+              boxShadow: '0 8px 32px 0 rgba(255,214,0,0.3)' 
+            }}
+          >
+            RESTART GAME
+          </button>
+          
+          <div className="flex justify-center items-center gap-8">
             <img src="/eu-flag.jpg" alt="European Union Flag" className="w-32 h-auto" />
             <img src="/pravda-logo.png" alt="Pravda Association Logo" className="w-32 h-auto" />
           </div>
@@ -152,8 +326,6 @@ export default function DeepfakeQuizApp() {
       </div>
     );
   }
-
-  const currentImage = images[currentIndex];
 
   return (
     <div
@@ -164,61 +336,160 @@ export default function DeepfakeQuizApp() {
         paddingTop: 'env(safe-area-inset-top)',
       }}
     >
-      <header className="text-center pt-2 px-4 w-full">
-        <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 ecl-heading ecl-heading--h1">
-          Bot or Not!
+      <header className="sticky top-0 z-10 text-center pt-2 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white">
+        <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 ecl-heading ecl-heading--h1" style={{ 
+          fontFamily: 'Minecraft, "Courier New", monospace !important',
+          letterSpacing: '2px'
+        }}>
+          BOT OR NOT!
         </h1>
-        <div className="flex justify-center gap-8">
-          <div className="text-md font-semibold text-blue-900 ecl-paragraph">
-            Score: {score} / {images.length}
+        
+        {/* End Game Button */}
+        <div className="flex justify-center sm:justify-end mt-2 mb-2 sm:mt-0 sm:mb-0 sm:absolute sm:top-2 sm:right-4">
+          <button
+            onClick={() => setShowResult(true)}
+            className="px-4 py-2 text-sm font-bold rounded-lg shadow-lg hover:scale-105 transition-all duration-200"
+            style={{ 
+              backgroundColor: '#FF4444', 
+              color: 'white', 
+              border: '2px solid #000', 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              letterSpacing: '1px',
+              boxShadow: '0 2px 8px 0 rgba(255,68,68,0.3)' 
+            }}
+          >
+            END GAME
+          </button>
+        </div>
+        
+        <div className="flex justify-center items-center gap-8">
+          <div className="text-md font-semibold text-blue-900 ecl-paragraph" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            SCORE: {score}
           </div>
-          <div className="text-md font-semibold text-blue-900 ecl-paragraph">
-            Time: {timer}s
+          <div className="text-md font-semibold text-blue-900 ecl-paragraph" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            TIME: {timer}s
           </div>
+          {/* Minecraft-style Hearts */}
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((heart) => (
+              <Heart 
+                key={heart} 
+                filled={heart <= lives} 
+                size="w-5 h-5"
+              />
+            ))}
+          </div>
+
         </div>
       </header>
 
-      <main className="flex-grow flex items-center justify-center w-full h-[calc(100vh-60px)] select-none">
-        <div className="flex items-center justify-center w-full h-full">
-          <div className="relative flex items-center justify-center w-full h-full touch-pan-y">
-            {currentImage && (
-              <TinderCard
-                key={currentImage.id}
-                onSwipe={(dir) => handleSwipe(dir)}
-                preventSwipe={["up", "down"]}
-                flickOnSwipe={true}
-                swipeRequirementType={swipeRequirementType}
-                swipeThreshold={swipeThreshold}
-                className="absolute w-full h-full"
-              >
-                <div className="relative w-full h-full select-none pointer-events-auto">
-                  <img
-                    src={currentImage.url}
-                    alt={`quiz-${currentImage.id}`}
-                    className="w-full h-full object-cover rounded-3xl shadow-2xl select-none pointer-events-none"
-                    draggable={false}
-                  />
-                  {feedback && (
-                    <div
-                      className="absolute px-4 py-2 rounded-xl text-lg font-semibold shadow-lg z-50 text-center"
-                      style={{
-                        background: feedback.color === 'green' ? '#d1fae5' : '#fee2e2',
-                        color: feedback.color === 'green' ? '#065f46' : '#991b1b',
-                        border: '2px solid #fff',
-                        ...feedbackStyle,
-                        minWidth: '120px',
-                        maxWidth: '70%',
-                        pointerEvents: 'none',
-                      }}
-                    >
-                      {feedback.text}
+            <main className="flex-grow w-full h-[calc(100vh-60px)] select-none mt-4">
+        {/* Social Media Feed Mode */}
+          <div 
+            className="w-full h-full overflow-y-auto"
+            style={{ 
+              backgroundColor: '#003399',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
+            }}
+          >
+            <div ref={feedContainerRef} className="max-w-2xl mx-auto space-y-6 p-4 pb-20">
+              {images.slice(0, visibleImagesCount).map((image, index) => (
+                <div key={image.id} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  {/* Simplified Header */}
+                  <div className="p-4 pb-2 flex justify-between items-center">
+                    <div className="font-semibold text-gray-500 text-sm">{postData[index]?.username || `#${index}`}</div>
+                    <div className="font-semibold text-gray-500 text-sm">{postData[index]?.date || 'Loading...'}</div>
+                  </div>
+                  
+                  {/* Image */}
+                  <div className="relative">
+                    <img
+                      src={image.url}
+                      alt={`post-${image.id}`}
+                      className="w-full h-96 object-cover"
+                      draggable={false}
+                    />
+                    
+                  </div>
+                  
+                  {/* Action Buttons or Notification */}
+                  <div className="p-4">
+                    {!answeredImages.has(index) ? (
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleAnswer("deepfake", index)}
+                          className="flex-1 py-3 px-4 text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
+                          style={{ 
+                            backgroundColor: '#FF4444', 
+                            color: 'white', 
+                            border: '2px solid #000', 
+                            fontFamily: 'Minecraft, "Courier New", monospace !important',
+                            letterSpacing: '1px',
+                            boxShadow: '0 4px 16px 0 rgba(255,68,68,0.3)' 
+                          }}
+                        >
+                          DEEPFAKE
+                        </button>
+                        <button
+                          onClick={() => handleAnswer("real", index)}
+                          className="flex-1 py-3 px-4 text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
+                          style={{ 
+                            backgroundColor: '#44FF44', 
+                            color: 'black', 
+                            border: '2px solid #000', 
+                            fontFamily: 'Minecraft, "Courier New", monospace !important',
+                            letterSpacing: '1px',
+                            boxShadow: '0 4px 16px 0 rgba(68,255,68,0.3)' 
+                          }}
+                        >
+                          REAL
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-3">
+                        {(() => {
+                          const result = answerResults[index];
+                          if (!result) return null;
+                          
+                          if (result.isCorrect) {
+                            return (
+                              <div className="inline-block px-4 py-2 rounded-lg text-lg font-bold bg-green-100 text-green-800" style={{ 
+                                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                                border: '2px solid #000'
+                              }}>
+                                ✅&nbsp;&nbsp;CORRECT: IT WAS {result.correctAnswer.toUpperCase()}
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div className="inline-block px-4 py-2 rounded-lg text-lg font-bold bg-red-100 text-red-800" style={{ 
+                                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                                border: '2px solid #000'
+                              }}>
+                                ❌&nbsp;&nbsp;FALSE: IT WAS {result.correctAnswer.toUpperCase()}
+                              </div>
+                            );
+                          }
+                        })()}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Fake Engagement */}
+                  <div className="px-4 pb-4">
+                    <div className="flex items-center gap-4 text-gray-600">
+                      <span className="text-sm" style={{ fontFamily: 'Minecraft, "Courier New", monospace !important' }}>❤️ {postData[index]?.likes || 0} likes</span>
+                      <span className="text-sm" style={{ fontFamily: 'Minecraft, "Courier New", monospace !important' }}>💬 {postData[index]?.comments || 0} comments</span>
                     </div>
-                  )}
+                  </div>
                 </div>
-              </TinderCard>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
       </main>
     </div>
   );

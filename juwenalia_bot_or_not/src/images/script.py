@@ -15,7 +15,7 @@ os.makedirs(manifest_dir, exist_ok=True)
 
 # Load and sample CSV
 df = pd.read_csv(csv_path)
-sampled_df = df.sample(n=200, random_state=42).reset_index(drop=True)
+sampled_df = df.sample(n=400, random_state=42).reset_index(drop=True)
 
 # Mapping for labels
 label_map = {0: "real", 1: "deepfake"}
