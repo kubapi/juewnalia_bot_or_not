@@ -351,7 +351,7 @@ export default function DeepfakeQuizApp() {
       </button>
 
       <header className="sticky top-0 z-10 text-center pt-2 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white">
-        <h1 className="text-lg sm:text-3xl font-bold text-blue-900" style={{ 
+        <h1 className="game-title font-bold text-blue-900" style={{ 
           fontFamily: 'Minecraft, "Courier New", monospace !important',
           letterSpacing: '1px'
         }}>

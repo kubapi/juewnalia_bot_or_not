@@ -13,6 +13,17 @@
   font-family: 'Minecraft', "Courier New", monospace !important;
 }
 
+/* Responsive game title */
+.game-title {
+  font-size: 1rem !important;
+}
+
+@media (min-width: 640px) {
+  .game-title {
+    font-size: 3rem !important;
+  }
+}
+
 :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
