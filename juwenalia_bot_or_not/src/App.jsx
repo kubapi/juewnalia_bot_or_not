@@ -336,19 +336,19 @@ export default function DeepfakeQuizApp() {
         paddingTop: 'env(safe-area-inset-top)',
       }}
     >
-      <header className="sticky top-0 z-10 text-center pt-2 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white">
-        <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 ecl-heading ecl-heading--h1" style={{ 
-          fontFamily: 'Minecraft, "Courier New", monospace !important',
-          letterSpacing: '2px'
-        }}>
-          BOT OR NOT!
-        </h1>
-        
-        {/* End Game Button */}
-        <div className="flex justify-center sm:justify-end mt-2 mb-2 sm:mt-0 sm:mb-0 sm:absolute sm:top-2 sm:right-4">
+      <header className="sticky top-0 z-10 text-center pt-2 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white pb-2">
+        <div className="flex justify-between items-center mb-2">
+          <h1 className="text-xl sm:text-3xl font-bold text-blue-900 ecl-heading ecl-heading--h1 flex-1" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important',
+            letterSpacing: '2px'
+          }}>
+            BOT OR NOT!
+          </h1>
+          
+          {/* End Game Button */}
           <button
             onClick={() => setShowResult(true)}
-            className="px-4 py-2 text-sm font-bold rounded-lg shadow-lg hover:scale-105 transition-all duration-200"
+            className="px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg shadow-lg hover:scale-105 transition-all duration-200 ml-2"
             style={{ 
               backgroundColor: '#FF4444', 
               color: 'white', 
@@ -358,17 +358,17 @@ export default function DeepfakeQuizApp() {
               boxShadow: '0 2px 8px 0 rgba(255,68,68,0.3)' 
             }}
           >
-            END GAME
+            END
           </button>
         </div>
         
-        <div className="flex justify-center items-center gap-8">
-          <div className="text-md font-semibold text-blue-900 ecl-paragraph" style={{ 
+        <div className="flex justify-center items-center gap-4 sm:gap-8 flex-wrap">
+          <div className="text-sm sm:text-md font-semibold text-blue-900 ecl-paragraph" style={{ 
             fontFamily: 'Minecraft, "Courier New", monospace !important'
           }}>
             SCORE: {score}
           </div>
-          <div className="text-md font-semibold text-blue-900 ecl-paragraph" style={{ 
+          <div className="text-sm sm:text-md font-semibold text-blue-900 ecl-paragraph" style={{ 
             fontFamily: 'Minecraft, "Courier New", monospace !important'
           }}>
             TIME: {timer}s
@@ -379,15 +379,14 @@ export default function DeepfakeQuizApp() {
               <Heart 
                 key={heart} 
                 filled={heart <= lives} 
-                size="w-5 h-5"
+                size="w-4 h-4 sm:w-5 sm:h-5"
               />
             ))}
           </div>
-
         </div>
       </header>
 
-            <main className="flex-grow w-full h-[calc(100vh-60px)] select-none mt-4">
+            <main className="flex-grow w-full h-[calc(100vh-120px)] sm:h-[calc(100vh-100px)] select-none mt-2">
         {/* Social Media Feed Mode */}
           <div 
             className="w-full h-full overflow-y-auto"
@@ -396,7 +395,7 @@ export default function DeepfakeQuizApp() {
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
             }}
           >
-            <div ref={feedContainerRef} className="max-w-2xl mx-auto space-y-6 p-4 pb-20">
+            <div ref={feedContainerRef} className="max-w-2xl mx-auto space-y-4 sm:space-y-6 p-3 sm:p-4 pb-24 sm:pb-20">
               {images.slice(0, visibleImagesCount).map((image, index) => (
                 <div key={image.id} className="bg-white rounded-2xl shadow-lg overflow-hidden">
                   {/* Simplified Header */}
@@ -419,10 +418,10 @@ export default function DeepfakeQuizApp() {
                   {/* Action Buttons or Notification */}
                   <div className="p-4">
                     {!answeredImages.has(index) ? (
-                      <div className="flex gap-3">
+                      <div className="flex gap-2 sm:gap-3">
                         <button
                           onClick={() => handleAnswer("deepfake", index)}
-                          className="flex-1 py-3 px-4 text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
+                          className="flex-1 py-4 sm:py-3 px-3 sm:px-4 text-base sm:text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 min-h-[48px]"
                           style={{ 
                             backgroundColor: '#FF4444', 
                             color: 'white', 
@@ -436,7 +435,7 @@ export default function DeepfakeQuizApp() {
                         </button>
                         <button
                           onClick={() => handleAnswer("real", index)}
-                          className="flex-1 py-3 px-4 text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200"
+                          className="flex-1 py-4 sm:py-3 px-3 sm:px-4 text-base sm:text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 min-h-[48px]"
                           style={{ 
                             backgroundColor: '#44FF44', 
                             color: 'black', 
