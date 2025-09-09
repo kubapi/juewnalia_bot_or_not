@@ -336,94 +336,48 @@ export default function DeepfakeQuizApp() {
         paddingTop: 'env(safe-area-inset-top)',
       }}
     >
-      <header className="sticky top-0 z-10 text-center pt-1 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white pb-1">
-        {/* Mobile: Compact single row layout */}
-        <div className="relative flex justify-center items-center sm:hidden">
-          <h1 className="text-lg font-bold text-blue-900" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important',
-            letterSpacing: '1px'
-          }}>
-            BOT OR NOT!
-          </h1>
-          
-          <div className="absolute right-0 flex items-center gap-2">
-            <div className="text-xs font-semibold text-blue-900" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important'
-            }}>
-              {score}
-            </div>
-            <div className="text-xs font-semibold text-blue-900" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important'
-            }}>
-              {timer}s
-            </div>
-            <div className="flex gap-0.5">
-              {[1, 2, 3, 4, 5].map((heart) => (
-                <Heart 
-                  key={heart} 
-                  filled={heart <= lives} 
-                  size="w-3 h-3"
-                />
-              ))}
-            </div>
-            <button
-              onClick={() => setShowResult(true)}
-              className="w-6 h-6 flex items-center justify-center text-white font-bold rounded-full shadow-lg hover:scale-110 transition-all duration-200"
-              style={{ 
-                backgroundColor: '#FF4444', 
-                border: '1px solid #000', 
-                fontFamily: 'Minecraft, "Courier New", monospace !important',
-                fontSize: '12px'
-              }}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
+      {/* Fixed X button - always in top-right corner */}
+      <button
+        onClick={() => setShowResult(true)}
+        className="fixed top-2 right-2 z-50 w-8 h-8 flex items-center justify-center text-white font-bold rounded-full shadow-lg hover:scale-110 transition-all duration-200"
+        style={{ 
+          backgroundColor: '#FF4444', 
+          border: '2px solid #000', 
+          fontFamily: 'Minecraft, "Courier New", monospace !important',
+          fontSize: '14px'
+        }}
+      >
+        ✕
+      </button>
 
-        {/* Desktop: Compact single row layout with small X */}
-        <div className="hidden sm:block">
-          <div className="relative flex justify-center items-center">
-            <h1 className="text-3xl font-bold text-blue-900" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important',
-              letterSpacing: '2px'
-            }}>
-              BOT OR NOT!
-            </h1>
-            
-            <div className="absolute right-0 flex items-center gap-4">
-              <div className="text-md font-semibold text-blue-900" style={{ 
-                fontFamily: 'Minecraft, "Courier New", monospace !important'
-              }}>
-                SCORE: {score}
-              </div>
-              <div className="text-md font-semibold text-blue-900" style={{ 
-                fontFamily: 'Minecraft, "Courier New", monospace !important'
-              }}>
-                TIME: {timer}s
-              </div>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((heart) => (
-                  <Heart 
-                    key={heart} 
-                    filled={heart <= lives} 
-                    size="w-5 h-5"
-                  />
-                ))}
-              </div>
-              <button
-                onClick={() => setShowResult(true)}
-                className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-full shadow-lg hover:scale-110 transition-all duration-200"
-                style={{ 
-                  backgroundColor: '#FF4444', 
-                  border: '2px solid #000', 
-                  fontFamily: 'Minecraft, "Courier New", monospace !important',
-                  fontSize: '14px'
-                }}
-              >
-                ✕
-              </button>
-            </div>
+      <header className="sticky top-0 z-10 text-center pt-2 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white">
+        <h1 className="text-lg sm:text-3xl font-bold text-blue-900" style={{ 
+          fontFamily: 'Minecraft, "Courier New", monospace !important',
+          letterSpacing: '1px'
+        }}>
+          BOT OR NOT!
+        </h1>
+        
+        <div className="flex justify-center items-center gap-4 sm:gap-8 mt-2">
+          <div className="text-sm sm:text-md font-semibold text-blue-900" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            SCORE: {score}
+          </div>
+          <div className="text-sm sm:text-md font-semibold text-blue-900" style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important'
+          }}>
+            TIME: {timer}s
+          </div>
+          {/* Minecraft-style Hearts */}
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((heart) => (
+              <Heart 
+                key={heart} 
+                filled={heart <= lives} 
+                size="w-4 h-4 sm:w-5 sm:h-5"
+              />
+            ))}
           </div>
         </div>
       </header>
