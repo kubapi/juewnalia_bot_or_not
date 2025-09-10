@@ -104,7 +104,10 @@ export default function DeepfakeQuizApp() {
 
       let isCorrect = false;
       
-      if (userAnswer === image.label) {
+      // Map dataset labels to UI labels
+      const correctAnswer = image.label === "deepfake" ? "fake" : image.label;
+      
+      if (userAnswer === correctAnswer) {
         setScore((prev) => prev + 1);
         setCorrectAnswers((prev) => prev + 1);
         isCorrect = true;
@@ -126,7 +129,7 @@ export default function DeepfakeQuizApp() {
         ...prev,
         [targetImageId]: {
           userAnswer,
-          correctAnswer: image.label,
+          correctAnswer: correctAnswer,
           isCorrect
         }
       }));
