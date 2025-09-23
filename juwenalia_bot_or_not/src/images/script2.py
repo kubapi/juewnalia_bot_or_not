@@ -30,8 +30,8 @@ sampled_df = pd.concat([real_images, fake_images]).sample(frac=1, random_state=4
 # Mapping for labels
 label_map = {0: "real", 1: "deepfake"}
 
-# Define effect types
-EFFECT_TYPES = ['bw', 'tilt', 'blur', 'cheese', 'bw_tilt', 'bw_blur', 'tilt_blur', 'bw_tilt_blur', 'cheese_bw', 'cheese_tilt']
+# Define effect types (removed cheese effects, reduced bw probability)
+EFFECT_TYPES = ['tilt', 'blur', 'tilt_blur', 'bw', 'bw_tilt', 'bw_blur', 'bw_tilt_blur']
 
 def apply_black_white(img):
     """Convert image to grayscale"""
@@ -69,8 +69,14 @@ def apply_cheese_effect(img):
     return img_copy
 
 def apply_random_effects(img):
-    """Apply a random combination of effects"""
-    effect_type = random.choice(EFFECT_TYPES)
+    """Apply a random combination of effects with weighted probabilities"""
+    # Weighted random choice: 60% no bw, 40% with bw
+    if random.random() < 0.6:
+        # No black & white effects (60% probability)
+        effect_type = random.choice(['tilt', 'blur', 'tilt_blur'])
+    else:
+        # Black & white effects (40% probability)
+        effect_type = random.choice(['bw', 'bw_tilt', 'bw_blur', 'bw_tilt_blur'])
     
     if effect_type == 'bw':
         return apply_black_white(img)
@@ -78,8 +84,6 @@ def apply_random_effects(img):
         return apply_tilt(img)
     elif effect_type == 'blur':
         return apply_blur(img)
-    elif effect_type == 'cheese':
-        return apply_cheese_effect(img)
     elif effect_type == 'bw_tilt':
         img = apply_black_white(img)
         return apply_tilt(img)
@@ -93,12 +97,6 @@ def apply_random_effects(img):
         img = apply_black_white(img)
         img = apply_tilt(img)
         return apply_blur(img)
-    elif effect_type == 'cheese_bw':
-        img = apply_black_white(img)
-        return apply_cheese_effect(img)
-    elif effect_type == 'cheese_tilt':
-        img = apply_tilt(img)
-        return apply_cheese_effect(img)
     else:
         return img
 
