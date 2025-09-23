@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { images as allImages } from "./images/sample/imageManifest";
+import { images as allImages } from "./images/sample2/imageManifest";
 
 // Minecraft-style heart component using custom image
 const Heart = ({ filled = true, size = "w-6 h-6" }) => (

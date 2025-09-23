@@ -13,9 +13,15 @@ manifest_path = os.path.join(manifest_dir, 'imageManifest.js')
 os.makedirs(sample_dir, exist_ok=True)
 os.makedirs(manifest_dir, exist_ok=True)
 
-# Load and sample CSV
+# Load and sample CSV with balanced sampling
 df = pd.read_csv(csv_path)
-sampled_df = df.sample(n=400, random_state=42).reset_index(drop=True)
+
+# Get 70% real (280) and 30% fake (120) distribution
+real_images = df[df['label'] == 0].sample(n=280, random_state=42)
+fake_images = df[df['label'] == 1].sample(n=120, random_state=42)
+
+# Combine and shuffle
+sampled_df = pd.concat([real_images, fake_images]).sample(frac=1, random_state=42).reset_index(drop=True)
 
 # Mapping for labels
 label_map = {0: "real", 1: "deepfake"}
