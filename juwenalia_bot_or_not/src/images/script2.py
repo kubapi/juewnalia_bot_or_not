@@ -2,12 +2,12 @@ import pandas as pd
 import os
 import shutil
 import random
-from PIL import Image, ImageFilter, ImageDraw
+from PIL import Image, ImageFilter
 
 # File paths
 csv_path = 'train.csv'
 sample_dir = 'sample2'
-manifest_dir = 'src/images/sample2'
+manifest_dir = 'sample2'
 manifest_path = os.path.join(manifest_dir, 'imageManifest.js')
 
 # Create necessary folders
@@ -30,8 +30,13 @@ sampled_df = pd.concat([real_images, fake_images]).sample(frac=1, random_state=4
 # Mapping for labels
 label_map = {0: "real", 1: "deepfake"}
 
-# Define effect types (removed cheese effects, reduced bw probability)
-EFFECT_TYPES = ['tilt', 'blur', 'tilt_blur', 'bw', 'bw_tilt', 'bw_blur', 'bw_tilt_blur']
+# Define effect types with weights for 50% black & white
+# Black & white effects: 4 out of 8 = 50%
+# Color effects: 4 out of 8 = 50%
+EFFECT_TYPES = [
+    'bw', 'bw', 'bw', 'bw',  # 4/8 = 50% black & white effects
+    'tilt', 'blur', 'tilt_blur', 'bw_blur'  # 4/8 = 50% other effects
+]
 
 def apply_black_white(img):
     """Convert image to grayscale"""
@@ -40,43 +45,19 @@ def apply_black_white(img):
 def apply_tilt(img):
     """Apply random rotation between -15 and +15 degrees"""
     angle = random.uniform(-15, 15)
-    return img.rotate(angle, expand=True, fillcolor=255)
+    # Convert to RGBA to support transparency
+    if img.mode != 'RGBA':
+        img = img.convert('RGBA')
+    return img.rotate(angle, expand=True, fillcolor=(0, 0, 0, 0))
 
 def apply_blur(img):
     """Apply Gaussian blur"""
     return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(1, 3)))
 
-def apply_cheese_effect(img):
-    """Apply cheese effect - random rectangular holes"""
-    img_copy = img.copy()
-    draw = ImageDraw.Draw(img_copy)
-    width, height = img_copy.size
-    
-    # Create 2-5 random rectangular holes
-    num_holes = random.randint(2, 5)
-    for _ in range(num_holes):
-        # Random hole size (10-30% of image dimensions)
-        hole_width = random.randint(int(width * 0.1), int(width * 0.3))
-        hole_height = random.randint(int(height * 0.1), int(height * 0.3))
-        
-        # Random position
-        x = random.randint(0, width - hole_width)
-        y = random.randint(0, height - hole_height)
-        
-        # Draw white rectangle (hole)
-        draw.rectangle([x, y, x + hole_width, y + hole_height], fill=255)
-    
-    return img_copy
 
 def apply_random_effects(img):
-    """Apply a random combination of effects with weighted probabilities"""
-    # Weighted random choice: 60% no bw, 40% with bw
-    if random.random() < 0.6:
-        # No black & white effects (60% probability)
-        effect_type = random.choice(['tilt', 'blur', 'tilt_blur'])
-    else:
-        # Black & white effects (40% probability)
-        effect_type = random.choice(['bw', 'bw_tilt', 'bw_blur', 'bw_tilt_blur'])
+    """Apply a random combination of effects"""
+    effect_type = random.choice(EFFECT_TYPES)
     
     if effect_type == 'bw':
         return apply_black_white(img)
@@ -91,10 +72,6 @@ def apply_random_effects(img):
         img = apply_black_white(img)
         return apply_blur(img)
     elif effect_type == 'tilt_blur':
-        img = apply_tilt(img)
-        return apply_blur(img)
-    elif effect_type == 'bw_tilt_blur':
-        img = apply_black_white(img)
         img = apply_tilt(img)
         return apply_blur(img)
     else:
@@ -116,11 +93,19 @@ for _, row in sampled_df.iterrows():
     with Image.open(original_path) as img:
         # Apply random combination of effects
         processed_img = apply_random_effects(img)
+        
+        # Convert RGBA back to RGB with white background for JPEG compatibility
+        if processed_img.mode == 'RGBA':
+            # Create a white background
+            background = Image.new('RGB', processed_img.size, (255, 255, 255))
+            background.paste(processed_img, mask=processed_img.split()[-1])  # Use alpha channel as mask
+            processed_img = background
+        
         processed_img.save(new_path)
     
     # Add to manifest
     manifest_lines.append(
-        f'  {{ url: require("./{new_filename}"), label: "{label_map[label]}" }},')
+        f'  {{ url: new URL("./{new_filename}", import.meta.url).href, label: "{label_map[label]}" }},')
 
 # Finalize manifest file
 manifest_lines.append("];\n")
