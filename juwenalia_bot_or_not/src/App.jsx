@@ -163,50 +163,93 @@ export default function DeepfakeQuizApp() {
         backgroundColor: '#003399',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
       }}>
-        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl game-font">
-          <h1 className="text-5xl font-bold text-white text-center" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important',
-            letterSpacing: '3px'
-          }}>GAME RULES</h1>
+        <div 
+          className="backdrop-blur-md bg-white/10 rounded-2xl game-font"
+          style={{
+            width: '90%',
+            maxWidth: '90vw',
+            padding: '4vh 4vw',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6vh'
+          }}
+        >
+          <h1 
+            className="font-bold text-white text-center"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              letterSpacing: '0.3vw',
+              fontSize: 'clamp(4rem, 12vw, 18rem)',
+              lineHeight: '1.1'
+            }}
+          >
+            GAME RULES
+          </h1>
           
-          <div className="space-y-6 text-white text-center">
-            <div className="text-2xl font-bold" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important'
-            }}>
+          <div 
+            className="text-white text-center"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '3vh'
+            }}
+          >
+            <div 
+              className="font-bold"
+              style={{ 
+                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                fontSize: 'clamp(2.2rem, 4.5vw, 6rem)'
+              }}
+            >
               ❤️ YOU HAVE 5 HEARTS
             </div>
-            <div className="text-xl" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important'
-            }}>
+            <div 
+              style={{ 
+                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                fontSize: 'clamp(1.8rem, 3.5vw, 4.5rem)'
+              }}
+            >
               IF YOU ANSWER WRONG, YOU LOSE A HEART
             </div>
-            <div className="text-2xl font-bold" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important'
-            }}>
+            <div 
+              className="font-bold"
+              style={{ 
+                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                fontSize: 'clamp(2.2rem, 4.5vw, 6rem)'
+              }}
+            >
               ⏰ 60 SECONDS TO COLLECT POINTS
             </div>
-            <div className="text-xl" style={{ 
-              fontFamily: 'Minecraft, "Courier New", monospace !important'
-            }}>
+            <div 
+              style={{ 
+                fontFamily: 'Minecraft, "Courier New", monospace !important',
+                fontSize: 'clamp(1.8rem, 3.5vw, 4.5rem)'
+              }}
+            >
               YOUR TASK IS TO GET AS MANY POINTS AS POSSIBLE!
             </div>
           </div>
           
-          <div className="flex justify-center">
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               onClick={() => {
                 reshuffleImages();
                 setShowInstructions(false);
                 setStarted(true);
               }}
-              className="px-20 py-10 text-4xl font-bold rounded-2xl shadow-2xl hover:scale-105 transition"
+              className="font-bold shadow-2xl hover:scale-105 transition"
               style={{ 
                 backgroundColor: '#FFD600', 
                 color: '#003399', 
-                border: '4px solid #000', 
+                border: '0.4vw solid #000', 
                 fontFamily: 'Minecraft, "Courier New", monospace !important',
-                letterSpacing: '2px',
-                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.2)' 
+                letterSpacing: '0.3vw',
+                boxShadow: '0 1vh 4vh 0 rgba(0,0,0,0.3)',
+                padding: '3vh 8vw',
+                fontSize: 'clamp(3rem, 7vw, 9rem)',
+                borderRadius: '1.5vw',
+                cursor: 'pointer'
               }}
             >
               LET'S GO!
@@ -223,36 +266,78 @@ export default function DeepfakeQuizApp() {
         backgroundColor: '#003399',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
       }}>
-        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl game-font">
-          <h1 className="text-5xl font-bold text-white text-center" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important',
-            letterSpacing: '3px'
-          }}>BOT OR NOT!</h1>
-          <p className="text-white text-center mb-8 text-xl" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important'
-          }}>
+        <div 
+          className="backdrop-blur-md bg-white/10 rounded-2xl game-font"
+          style={{
+            width: '90%',
+            maxWidth: '90vw',
+            padding: '4vh 4vw',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6vh'
+          }}
+        >
+          <h1 
+            className="font-bold text-white text-center"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              letterSpacing: '0.3vw',
+              fontSize: 'clamp(13rem, 15vw, 20rem)',
+              lineHeight: '1.1'
+            }}
+          >
+            BOT OR NOT!
+          </h1>
+          <p 
+            className="text-white text-center"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              fontSize: 'clamp(1.8rem, 4vw, 5rem)',
+              marginBottom: '2vh',
+              lineHeight: '1.3'
+            }}
+          >
             SCROLL THROUGH THE SOCIAL FEED AND CLICK "FAKE" OR "REAL" FOR EACH POST.
           </p>
           
-          <div className="flex justify-center">
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               onClick={() => setShowInstructions(true)}
-              className="px-40 py-20 text-7xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition"
+              className="font-bold shadow-2xl hover:scale-105 transition"
               style={{ 
                 backgroundColor: '#FFD600', 
                 color: '#003399', 
-                border: '4px solid #000', 
+                border: '0.4vw solid #000', 
                 fontFamily: 'Minecraft, "Courier New", monospace !important',
-                letterSpacing: '4px',
-                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.2)' 
+                letterSpacing: '0.4vw',
+                boxShadow: '0 1vh 4vh 0 rgba(0,0,0,0.3)',
+                padding: '4vh 10vw',
+                fontSize: 'clamp(3.5rem, 8vw, 12rem)',
+                borderRadius: '2vw',
+                cursor: 'pointer'
               }}
             >
               START GAME!
             </button>
           </div>
-          <div className="flex justify-center items-center gap-8 mt-12">
-            <img src="/eu-flag.jpg" alt="European Union Flag" className="w-32 h-auto" />
-            <img src="/pravda-logo.png" alt="Pravda Association Logo" className="w-32 h-auto" />
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            gap: '8vw',
+            marginTop: '4vh'
+          }}>
+            <img 
+              src="/eu-flag.jpg" 
+              alt="European Union Flag" 
+              style={{ width: 'clamp(24rem, 36vw, 48rem)', height: 'auto' }} 
+            />
+            <img 
+              src="/pravda-logo.png" 
+              alt="Pravda Association Logo" 
+              style={{ width: 'clamp(24rem, 36vw, 48rem)', height: 'auto' }} 
+            />
           </div>
         </div>
       </div>
@@ -265,30 +350,66 @@ export default function DeepfakeQuizApp() {
         backgroundColor: '#003399',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
       }}>
-        <div className="backdrop-blur-md bg-white/10 p-10 rounded-xl space-y-8 w-full max-w-2xl flex flex-col items-center game-font">
-          <h1 className="text-5xl font-bold text-white text-center" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important',
-            letterSpacing: '3px'
-          }}>NICE TRY!</h1>
-          <p className="text-white text-center mb-8 text-3xl font-bold" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important'
-          }}>
-            YOUR SCORE: <span className="font-black text-4xl">{score}</span>
+        <div 
+          className="backdrop-blur-md bg-white/10 rounded-2xl game-font"
+          style={{
+            width: '90%',
+            maxWidth: '90vw',
+            padding: '4vh 4vw',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '4vh'
+          }}
+        >
+          <h1 
+            className="font-bold text-white text-center"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              letterSpacing: '0.3vw',
+              fontSize: 'clamp(4rem, 12vw, 18rem)',
+              lineHeight: '1.1'
+            }}
+          >
+            NICE TRY!
+          </h1>
+          <p 
+            className="text-white text-center font-bold"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              fontSize: 'clamp(2.8rem, 6vw, 8rem)',
+              marginBottom: '2vh'
+            }}
+          >
+            YOUR SCORE: <span style={{ fontSize: 'clamp(3.5rem, 7vw, 10rem)' }}>{score}</span>
           </p>
-          <p className="text-white text-center mb-4 text-lg" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important'
-          }}>
-            YOU ANSWERED <span className="font-black text-xl">{correctAnswers}</span> POSTS CORRECTLY OUT OF <span className="font-black text-xl">{answeredImages.size}</span> POSTS
+          <p 
+            className="text-white text-center"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              fontSize: 'clamp(1.5rem, 3vw, 4rem)',
+              marginBottom: '2vh'
+            }}
+          >
+            YOU ANSWERED <span style={{ fontSize: 'clamp(1.8rem, 3.5vw, 4.5rem)', fontWeight: 'bold' }}>{correctAnswers}</span> POSTS CORRECTLY OUT OF <span style={{ fontSize: 'clamp(1.8rem, 3.5vw, 4.5rem)', fontWeight: 'bold' }}>{answeredImages.size}</span> POSTS
           </p>
           
-          <div className="text-white text-center mb-4 text-lg" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important'
-          }}>
-            <div className="mb-2">
-              ❌ FAKES DETECTED: <span className="font-black text-xl">{deepfakesDetected}</span>
+          <div 
+            className="text-white text-center"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              fontSize: 'clamp(1.5rem, 3vw, 4rem)',
+              marginBottom: '2vh',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1vh'
+            }}
+          >
+            <div>
+              ❌ FAKES DETECTED: <span style={{ fontSize: 'clamp(1.8rem, 3.5vw, 4.5rem)', fontWeight: 'bold' }}>{deepfakesDetected}</span>
             </div>
             <div>
-              ✅ REAL IMAGES DETECTED: <span className="font-black text-xl">{realDetected}</span>
+              ✅ REAL IMAGES DETECTED: <span style={{ fontSize: 'clamp(1.8rem, 3.5vw, 4.5rem)', fontWeight: 'bold' }}>{realDetected}</span>
             </div>
           </div>
           
@@ -308,22 +429,40 @@ export default function DeepfakeQuizApp() {
               setLives(5);
               setTimer(60);
             }}
-            className="px-8 py-4 text-xl font-bold rounded-xl shadow-2xl hover:scale-105 transition-all duration-200 mb-8"
+            className="font-bold shadow-2xl hover:scale-105 transition-all duration-200"
             style={{ 
               backgroundColor: '#FFD600', 
               color: '#003399', 
-              border: '3px solid #000', 
+              border: '0.3vw solid #000', 
               fontFamily: 'Minecraft, "Courier New", monospace !important',
-              letterSpacing: '2px',
-              boxShadow: '0 8px 32px 0 rgba(255,214,0,0.3)' 
+              letterSpacing: '0.3vw',
+              boxShadow: '0 1vh 4vh 0 rgba(255,214,0,0.3)',
+              padding: '2.5vh 6vw',
+              fontSize: 'clamp(1.8rem, 4vw, 5rem)',
+              borderRadius: '1vw',
+              cursor: 'pointer',
+              marginBottom: '2vh'
             }}
           >
             RESTART GAME
           </button>
           
-          <div className="flex justify-center items-center gap-8">
-            <img src="/eu-flag.jpg" alt="European Union Flag" className="w-32 h-auto" />
-            <img src="/pravda-logo.png" alt="Pravda Association Logo" className="w-32 h-auto" />
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            gap: '8vw'
+          }}>
+            <img 
+              src="/eu-flag.jpg" 
+              alt="European Union Flag" 
+              style={{ width: 'clamp(24rem, 36vw, 48rem)', height: 'auto' }} 
+            />
+            <img 
+              src="/pravda-logo.png" 
+              alt="Pravda Association Logo" 
+              style={{ width: 'clamp(24rem, 36vw, 48rem)', height: 'auto' }} 
+            />
           </div>
         </div>
       </div>
@@ -353,32 +492,58 @@ export default function DeepfakeQuizApp() {
         ✕
       </button>
 
-      <header className="sticky top-0 z-10 text-center pt-2 px-4 w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white">
-        <h1 className="game-title font-bold text-blue-900" style={{ 
-          fontFamily: 'Minecraft, "Courier New", monospace !important',
-          letterSpacing: '1px'
-        }}>
+      <header 
+        className="sticky top-0 z-10 text-center w-full game-font relative bg-gradient-to-b from-white via-gray-100 to-white"
+        style={{
+          paddingTop: '1vh',
+          paddingLeft: '2vw',
+          paddingRight: '2vw'
+        }}
+      >
+        <h1 
+          className="font-bold text-blue-900"
+          style={{ 
+            fontFamily: 'Minecraft, "Courier New", monospace !important',
+            letterSpacing: '0.2vw',
+            fontSize: 'clamp(5rem, 10vw, 12rem)',
+            lineHeight: '1.2'
+          }}
+        >
           BOT OR NOT!
         </h1>
         
-        <div className="flex justify-center items-center gap-4 sm:gap-8 mt-2">
-          <div className="text-sm sm:text-md font-semibold text-blue-900" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important'
-          }}>
+        <div 
+          className="flex justify-center items-center"
+          style={{
+            gap: '2vw',
+            marginTop: '1vh'
+          }}
+        >
+          <div 
+            className="font-semibold text-blue-900"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              fontSize: 'clamp(4rem, 7vw, 7rem)'
+            }}
+          >
             SCORE: {score}
           </div>
-          <div className="text-sm sm:text-md font-semibold text-blue-900" style={{ 
-            fontFamily: 'Minecraft, "Courier New", monospace !important'
-          }}>
+          <div 
+            className="font-semibold text-blue-900"
+            style={{ 
+              fontFamily: 'Minecraft, "Courier New", monospace !important',
+              fontSize: 'clamp(4rem, 7vw, 7rem)'
+            }}
+          >
             TIME: {timer}s
           </div>
           {/* Minecraft-style Hearts */}
-          <div className="flex gap-1">
+          <div style={{ display: 'flex', gap: '0.5vw' }}>
             {[1, 2, 3, 4, 5].map((heart) => (
               <Heart 
                 key={heart} 
                 filled={heart <= lives} 
-                size="w-4 h-4 sm:w-5 sm:h-5"
+                size="w-24 h-24"
               />
             ))}
           </div>
@@ -394,80 +559,146 @@ export default function DeepfakeQuizApp() {
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2.5' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E")`,
             }}
           >
-            <div ref={feedContainerRef} className="max-w-2xl mx-auto space-y-4 sm:space-y-6 p-3 sm:p-4 pb-24 sm:pb-20">
+            <div 
+              ref={feedContainerRef} 
+              style={{
+                width: '95%',
+                maxWidth: '95vw',
+                margin: '0 auto',
+                padding: '2vh 2vw',
+                paddingBottom: '8vh',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2vh'
+              }}
+            >
               {images.slice(0, visibleImagesCount).map((image, index) => (
-                <div key={image.id} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div 
+                  key={image.id} 
+                  className="bg-white shadow-lg overflow-hidden"
+                  style={{
+                    borderRadius: '1.5vw',
+                    boxShadow: '0 0.5vh 2vh 0 rgba(0,0,0,0.1)'
+                  }}
+                >
                   {/* Simplified Header */}
-                  <div className="p-4 pb-2 flex justify-between items-center">
-                    <div className="font-semibold text-gray-500 text-sm">{postData[index]?.username || `#${index}`}</div>
-                    <div className="font-semibold text-gray-500 text-sm">{postData[index]?.date || 'Loading...'}</div>
+                  <div 
+                    className="flex justify-between items-center"
+                    style={{
+                      padding: '2vh 2vw',
+                      paddingBottom: '1vh'
+                    }}
+                  >
+                    <div 
+                      className="font-semibold text-gray-500"
+                      style={{ fontSize: 'clamp(2.4rem, 4vw, 4rem)' }}
+                    >
+                      {postData[index]?.username || `#${index}`}
+                    </div>
+                    <div 
+                      className="font-semibold text-gray-500"
+                      style={{ fontSize: 'clamp(2.4rem, 4vw, 4rem)' }}
+                    >
+                      {postData[index]?.date || 'Loading...'}
+                    </div>
                   </div>
                   
                   {/* Image */}
-                  <div className="relative">
+                  <div 
+                    className="relative flex items-center justify-center bg-gray-100"
+                    style={{ height: 'clamp(20vh, 40vh, 50vh)' }}
+                  >
                     <img
                       src={image.url}
                       alt={`post-${image.id}`}
-                      className="w-full h-96 object-cover"
+                      className="w-full h-full object-cover object-center"
                       draggable={false}
                     />
                     
                   </div>
                   
                   {/* Action Buttons or Notification */}
-                  <div className="p-4">
+                  <div style={{ padding: '2vh 2vw' }}>
                     {!answeredImages.has(index) ? (
-                      <div className="flex gap-2 sm:gap-3">
+                      <div 
+                        className="flex"
+                        style={{ gap: '1vw' }}
+                      >
                         <button
                           onClick={() => handleAnswer("fake", index)}
-                          className="flex-1 py-4 sm:py-3 px-3 sm:px-4 text-base sm:text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 min-h-[48px]"
+                          className="flex-1 font-bold shadow-lg hover:scale-105 transition-all duration-200"
                           style={{ 
                             backgroundColor: '#FF4444', 
                             color: 'white', 
-                            border: '2px solid #000', 
+                            border: '0.2vw solid #000', 
                             fontFamily: 'Minecraft, "Courier New", monospace !important',
-                            letterSpacing: '1px',
-                            boxShadow: '0 4px 16px 0 rgba(255,68,68,0.3)' 
+                            letterSpacing: '0.2vw',
+                            boxShadow: '0 0.3vh 1vh 0 rgba(255,68,68,0.3)',
+                            padding: '3.5vh 4vw',
+                            fontSize: 'clamp(2.5rem, 4.5vw, 5rem)',
+                            borderRadius: '1vw',
+                            minHeight: 'clamp(6rem, 10vh, 7rem)',
+                            cursor: 'pointer'
                           }}
                         >
                           FAKE
                         </button>
                         <button
                           onClick={() => handleAnswer("real", index)}
-                          className="flex-1 py-4 sm:py-3 px-3 sm:px-4 text-base sm:text-lg font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 min-h-[48px]"
+                          className="flex-1 font-bold shadow-lg hover:scale-105 transition-all duration-200"
                           style={{ 
                             backgroundColor: '#44FF44', 
                             color: 'black', 
-                            border: '2px solid #000', 
+                            border: '0.2vw solid #000', 
                             fontFamily: 'Minecraft, "Courier New", monospace !important',
-                            letterSpacing: '1px',
-                            boxShadow: '0 4px 16px 0 rgba(68,255,68,0.3)' 
+                            letterSpacing: '0.2vw',
+                            boxShadow: '0 0.3vh 1vh 0 rgba(68,255,68,0.3)',
+                            padding: '3.5vh 4vw',
+                            fontSize: 'clamp(2.5rem, 4.5vw, 5rem)',
+                            borderRadius: '1vw',
+                            minHeight: 'clamp(6rem, 10vh, 7rem)',
+                            cursor: 'pointer'
                           }}
                         >
                           REAL
                         </button>
                       </div>
                     ) : (
-                      <div className="text-center py-3">
+                      <div 
+                        className="text-center"
+                        style={{ padding: '1.5vh 0' }}
+                      >
                         {(() => {
                           const result = answerResults[index];
                           if (!result) return null;
                           
                           if (result.isCorrect) {
                             return (
-                              <div className="inline-block px-4 py-2 rounded-lg text-lg font-bold bg-green-100 text-green-800" style={{ 
-                                fontFamily: 'Minecraft, "Courier New", monospace !important',
-                                border: '2px solid #000'
-                              }}>
+                              <div 
+                                className="inline-block font-bold bg-green-100 text-green-800"
+                                style={{ 
+                                  fontFamily: 'Minecraft, "Courier New", monospace !important',
+                                  border: '0.2vw solid #000',
+                                  padding: '1.5vh 3vw',
+                                  borderRadius: '0.8vw',
+                                  fontSize: 'clamp(3rem, 5vw,5rem)'
+                                }}
+                              >
                                 ✅&nbsp;&nbsp;CORRECT: IT WAS {result.correctAnswer === 'fake' ? 'FAKE' : 'REAL'}
                               </div>
                             );
                           } else {
                             return (
-                              <div className="inline-block px-4 py-2 rounded-lg text-lg font-bold bg-red-100 text-red-800" style={{ 
-                                fontFamily: 'Minecraft, "Courier New", monospace !important',
-                                border: '2px solid #000'
-                              }}>
+                              <div 
+                                className="inline-block font-bold bg-red-100 text-red-800"
+                                style={{ 
+                                  fontFamily: 'Minecraft, "Courier New", monospace !important',
+                                  border: '0.2vw solid #000',
+                                  padding: '1.5vh 3vw',
+                                  borderRadius: '0.8vw',
+                                  fontSize: 'clamp(3rem, 5vw,5rem)'
+                                }}
+                              >
                                 ❌&nbsp;&nbsp;FALSE: IT WAS {result.correctAnswer === 'fake' ? 'FAKE' : 'REAL'}
                               </div>
                             );
@@ -478,10 +709,31 @@ export default function DeepfakeQuizApp() {
                   </div>
                   
                   {/* Fake Engagement */}
-                  <div className="px-4 pb-4">
-                    <div className="flex items-center gap-4 text-gray-600">
-                      <span className="text-sm" style={{ fontFamily: 'Minecraft, "Courier New", monospace !important' }}>❤️ {postData[index]?.likes || 0} likes</span>
-                      <span className="text-sm" style={{ fontFamily: 'Minecraft, "Courier New", monospace !important' }}>💬 {postData[index]?.comments || 0} comments</span>
+                  <div 
+                    style={{ 
+                      padding: '0 2vw 2vh 2vw'
+                    }}
+                  >
+                    <div 
+                      className="flex items-center text-gray-600"
+                      style={{ gap: '2vw' }}
+                    >
+                      <span 
+                        style={{ 
+                          fontFamily: 'Minecraft, "Courier New", monospace !important',
+                          fontSize: 'clamp(4rem, 5vw, 4rem)'
+                        }}
+                      >
+                        ❤️ {postData[index]?.likes || 0} likes
+                      </span>
+                      <span 
+                        style={{ 
+                          fontFamily: 'Minecraft, "Courier New", monospace !important',
+                          fontSize: 'clamp(4rem, 5vw, 4rem)'
+                        }}
+                      >
+                        💬 {postData[index]?.comments || 0} comments
+                      </span>
                     </div>
                   </div>
                 </div>
