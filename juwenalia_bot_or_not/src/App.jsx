@@ -283,7 +283,7 @@ export default function DeepfakeQuizApp() {
             style={{ 
               fontFamily: 'Minecraft, "Courier New", monospace !important',
               letterSpacing: '0.3vw',
-              fontSize: 'clamp(13rem, 15vw, 20rem)',
+              fontSize: 'clamp(3rem, 15vw, 20rem)',
               lineHeight: '1.1'
             }}
           >
@@ -486,7 +486,7 @@ export default function DeepfakeQuizApp() {
           backgroundColor: '#FF4444', 
           border: '2px solid #000', 
           fontFamily: 'Minecraft, "Courier New", monospace !important',
-          fontSize: '14px'
+          fontSize: '24px'
         }}
       >
         ✕
@@ -505,7 +505,7 @@ export default function DeepfakeQuizApp() {
           style={{ 
             fontFamily: 'Minecraft, "Courier New", monospace !important',
             letterSpacing: '0.2vw',
-            fontSize: 'clamp(5rem, 10vw, 12rem)',
+            fontSize: 'clamp(2rem, 10vw, 12rem)',
             lineHeight: '1.2'
           }}
         >
@@ -523,7 +523,7 @@ export default function DeepfakeQuizApp() {
             className="font-semibold text-blue-900"
             style={{ 
               fontFamily: 'Minecraft, "Courier New", monospace !important',
-              fontSize: 'clamp(4rem, 7vw, 7rem)'
+              fontSize: 'clamp(1.2rem, 7vw, 7rem)'
             }}
           >
             SCORE: {score}
@@ -532,7 +532,7 @@ export default function DeepfakeQuizApp() {
             className="font-semibold text-blue-900"
             style={{ 
               fontFamily: 'Minecraft, "Courier New", monospace !important',
-              fontSize: 'clamp(4rem, 7vw, 7rem)'
+              fontSize: 'clamp(1.2rem, 7vw, 7rem)'
             }}
           >
             TIME: {timer}s
@@ -543,7 +543,7 @@ export default function DeepfakeQuizApp() {
               <Heart 
                 key={heart} 
                 filled={heart <= lives} 
-                size="w-24 h-24"
+                size="w-6 h-6 sm:w-8 sm:h-8 lg:w-12 lg:h-12 xl:w-16 xl:h-16"
               />
             ))}
           </div>
@@ -591,13 +591,13 @@ export default function DeepfakeQuizApp() {
                   >
                     <div 
                       className="font-semibold text-gray-500"
-                      style={{ fontSize: 'clamp(2.4rem, 4vw, 4rem)' }}
+                      style={{ fontSize: 'clamp(0.8rem, 4vw, 4rem)' }}
                     >
                       {postData[index]?.username || `#${index}`}
                     </div>
                     <div 
                       className="font-semibold text-gray-500"
-                      style={{ fontSize: 'clamp(2.4rem, 4vw, 4rem)' }}
+                      style={{ fontSize: 'clamp(0.8rem, 4vw, 4rem)' }}
                     >
                       {postData[index]?.date || 'Loading...'}
                     </div>
@@ -635,9 +635,9 @@ export default function DeepfakeQuizApp() {
                             letterSpacing: '0.2vw',
                             boxShadow: '0 0.3vh 1vh 0 rgba(255,68,68,0.3)',
                             padding: '3.5vh 4vw',
-                            fontSize: 'clamp(2.5rem, 4.5vw, 5rem)',
+                            fontSize: 'clamp(1.2rem, 4.5vw, 5rem)',
                             borderRadius: '1vw',
-                            minHeight: 'clamp(6rem, 10vh, 7rem)',
+                            minHeight: 'clamp(3rem, 10vh, 7rem)',
                             cursor: 'pointer'
                           }}
                         >
@@ -654,9 +654,9 @@ export default function DeepfakeQuizApp() {
                             letterSpacing: '0.2vw',
                             boxShadow: '0 0.3vh 1vh 0 rgba(68,255,68,0.3)',
                             padding: '3.5vh 4vw',
-                            fontSize: 'clamp(2.5rem, 4.5vw, 5rem)',
+                            fontSize: 'clamp(1.2rem, 4.5vw, 5rem)',
                             borderRadius: '1vw',
-                            minHeight: 'clamp(6rem, 10vh, 7rem)',
+                            minHeight: 'clamp(3rem, 10vh, 7rem)',
                             cursor: 'pointer'
                           }}
                         >
@@ -681,7 +681,7 @@ export default function DeepfakeQuizApp() {
                                   border: '0.2vw solid #000',
                                   padding: '1.5vh 3vw',
                                   borderRadius: '0.8vw',
-                                  fontSize: 'clamp(3rem, 5vw,5rem)'
+                                  fontSize: 'clamp(1rem, 5vw, 5rem)'
                                 }}
                               >
                                 ✅&nbsp;&nbsp;CORRECT: IT WAS {result.correctAnswer === 'fake' ? 'FAKE' : 'REAL'}
@@ -696,7 +696,7 @@ export default function DeepfakeQuizApp() {
                                   border: '0.2vw solid #000',
                                   padding: '1.5vh 3vw',
                                   borderRadius: '0.8vw',
-                                  fontSize: 'clamp(3rem, 5vw,5rem)'
+                                  fontSize: 'clamp(1rem, 5vw, 5rem)'
                                 }}
                               >
                                 ❌&nbsp;&nbsp;FALSE: IT WAS {result.correctAnswer === 'fake' ? 'FAKE' : 'REAL'}
@@ -721,7 +721,7 @@ export default function DeepfakeQuizApp() {
                       <span 
                         style={{ 
                           fontFamily: 'Minecraft, "Courier New", monospace !important',
-                          fontSize: 'clamp(4rem, 5vw, 4rem)'
+                          fontSize: 'clamp(1.2rem, 5vw, 4rem)'
                         }}
                       >
                         ❤️ {postData[index]?.likes || 0} likes
@@ -729,7 +729,7 @@ export default function DeepfakeQuizApp() {
                       <span 
                         style={{ 
                           fontFamily: 'Minecraft, "Courier New", monospace !important',
-                          fontSize: 'clamp(4rem, 5vw, 4rem)'
+                          fontSize: 'clamp(1.2rem, 5vw, 4rem)'
                         }}
                       >
                         💬 {postData[index]?.comments || 0} comments
