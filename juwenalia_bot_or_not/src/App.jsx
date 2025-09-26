@@ -581,27 +581,6 @@ export default function DeepfakeQuizApp() {
                     boxShadow: '0 0.5vh 2vh 0 rgba(0,0,0,0.1)'
                   }}
                 >
-                  {/* Simplified Header */}
-                  <div 
-                    className="flex justify-between items-center"
-                    style={{
-                      padding: '2vh 2vw',
-                      paddingBottom: '1vh'
-                    }}
-                  >
-                    <div 
-                      className="font-semibold text-gray-500"
-                      style={{ fontSize: 'clamp(0.8rem, 4vw, 4rem)' }}
-                    >
-                      {postData[index]?.username || `#${index}`}
-                    </div>
-                    <div 
-                      className="font-semibold text-gray-500"
-                      style={{ fontSize: 'clamp(0.8rem, 4vw, 4rem)' }}
-                    >
-                      {postData[index]?.date || 'Loading...'}
-                    </div>
-                  </div>
                   
                   {/* Image */}
                   <div 
